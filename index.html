@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Sign Language Detection &amp; Translation System</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "on-primary-fixed": "#00121d",
+                        "surface-bright": "#1f2b49",
+                        "error": "#ff716c",
+                        "surface-container-high": "#141f38",
+                        "secondary-container": "#2f3aa3",
+                        "on-error": "#490006",
+                        "secondary": "#8a95ff",
+                        "on-secondary-fixed": "#192490",
+                        "surface-variant": "#192540",
+                        "surface-dim": "#060e20",
+                        "tertiary-container": "#888bf7",
+                        "background": "#060e20",
+                        "surface-container-lowest": "#000000",
+                        "tertiary-fixed-dim": "#9799ff",
+                        "on-tertiary": "#100980",
+                        "secondary-fixed-dim": "#babfff",
+                        "inverse-primary": "#00668b",
+                        "surface-tint": "#3bbffa",
+                        "secondary-dim": "#8a95ff",
+                        "error-container": "#9f0519",
+                        "outline": "#6d758c",
+                        "on-secondary": "#000974",
+                        "surface": "#060e20",
+                        "on-primary-fixed-variant": "#003a50",
+                        "primary-fixed": "#2db7f2",
+                        "on-tertiary-fixed-variant": "#292993",
+                        "surface-container": "#0f1930",
+                        "on-surface": "#dee5ff",
+                        "inverse-on-surface": "#4d556b",
+                        "on-tertiary-container": "#05005f",
+                        "secondary-fixed": "#cbceff",
+                        "inverse-surface": "#faf8ff",
+                        "surface-container-highest": "#192540",
+                        "tertiary-fixed": "#a7a9ff",
+                        "on-secondary-fixed-variant": "#3a45ad",
+                        "primary-fixed-dim": "#05a9e3",
+                        "tertiary-dim": "#9093ff",
+                        "on-background": "#dee5ff",
+                        "on-tertiary-fixed": "#060061",
+                        "on-primary-container": "#002b3d",
+                        "error-dim": "#d7383b",
+                        "outline-variant": "#40485d",
+                        "surface-container-low": "#091328",
+                        "on-primary": "#00374d",
+                        "primary": "#3bbffa",
+                        "on-error-container": "#ffa8a3",
+                        "primary-dim": "#05a9e3",
+                        "tertiary": "#9799ff",
+                        "on-surface-variant": "#a3aac4",
+                        "on-secondary-container": "#c9cdff",
+                        "primary-container": "#22b1ec"
+                    },
+                    fontFamily: {
+                        "headline": ["Inter"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            vertical-align: middle;
+        }
+        .glass-card {
+            background: rgba(25, 37, 64, 0.6);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+        body {
+            background-color: #060e20;
+            color: #dee5ff;
+            font-family: 'Inter', sans-serif;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(25, 37, 64, 0.4);
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(109, 117, 140, 0.5);
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: rgba(59, 191, 250, 0.8);
+        }
+    </style>
+</head>
+<body class="selection:bg-primary selection:text-on-primary-container">
+<!-- TopNavBar -->
+<header class="fixed top-0 w-full z-50 bg-[#060e20]/60 backdrop-blur-xl shadow-[0_20px_40px_rgba(222,229,255,0.06)]">
+<nav class="flex justify-between items-center px-8 py-4 max-w-7xl mx-auto font-['Inter'] tracking-tight font-medium">
+<div class="text-xl font-bold tracking-tighter text-[#dee5ff]">
+                Sign Language Detection
+            </div>
+<div class="hidden md:flex items-center gap-8">
+<a class="text-[#3bbffa] border-b-2 border-[#3bbffa] pb-1 transition-all duration-300" href="#">Home</a>
+<a class="text-[#dee5ff] opacity-70 hover:text-[#3bbffa] hover:opacity-100 transition-all duration-300" href="#about">About</a>
+<a class="text-[#dee5ff] opacity-70 hover:text-[#3bbffa] hover:opacity-100 transition-all duration-300" href="#how-it-works">How It Works</a>
+<a class="text-[#dee5ff] opacity-70 hover:text-[#3bbffa] hover:opacity-100 transition-all duration-300" href="#add-sign">Add Sign</a>
+</div>
+<button id="nav-start-btn" class="bg-gradient-to-br from-primary to-primary-container text-on-primary font-bold py-2 px-6 rounded-xl hover:scale-105 active:scale-95 transition-all duration-300">
+                Start Detection
+            </button>
+</nav>
+</header>
+<main class="pt-24">
+<!-- Hero Section -->
+<section class="max-w-7xl mx-auto px-8 py-20 lg:py-32 grid lg:grid-cols-2 gap-12 items-center">
+<div class="space-y-8">
+<div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface-container-highest border border-outline-variant/20 text-primary text-sm font-label tracking-widest uppercase">
+<span class="relative flex h-2 w-2">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+</span>
+                    AI Powered Interpretation
+                </div>
+<h1 class="text-5xl lg:text-7xl font-bold tracking-tighter leading-tight text-on-surface">
+                    Real-Time <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">Sign Language</span> Detection
+                </h1>
+<p class="text-xl text-on-surface-variant max-w-lg leading-relaxed">
+                    Translate hand gestures into text instantly using AI. Breaking communication barriers with the speed of thought and precision of machine learning.
+                </p>
+<div class="flex flex-wrap gap-4">
+<button id="hero-start-btn" class="bg-gradient-to-br from-primary to-primary-container text-on-primary font-bold py-4 px-10 rounded-xl hover:scale-105 transition-all shadow-[0_0_30px_rgba(59,191,250,0.3)]">
+                        Start Detection
+                    </button>
+<button class="border border-outline-variant/40 text-primary font-bold py-4 px-10 rounded-xl hover:bg-surface-container-highest transition-all">
+                        View Demo
+                    </button>
+</div>
+</div>
+<div class="relative group">
+<div class="absolute -inset-1 bg-gradient-to-r from-primary/20 to-secondary/20 rounded-3xl blur-2xl group-hover:opacity-100 transition duration-1000"></div>
+<div class="relative aspect-square rounded-3xl overflow-hidden bg-surface-container-low border border-outline-variant/20">
+<img alt="AI Visualization" class="w-full h-full object-cover opacity-80" data-alt="Futuristic high-tech cybersecurity interface with glowing blue neural network patterns and abstract digital data representation on dark background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA91o8TE1khX9PF7ONXDcerSTeIu-Ump5zvb_FEAGlFM3ENNuL5W8eV77r6-bIgcTUD9WzZtkbwnluCsfFrAW8icFHpjDgsIH3BaxMQjpn2VIkbXnZqgSCRYMbHXxpFLqRMdPd_iafTgv0tbj50D_U9ilA7ZKT2lyj7hT7sA0lvZ7YtNmjHPM8J0Ey249CP19SVtRPolSuwEdVdlf3S1GC3MOgyqIL7cioFVtGpuAUbM7hx5-fY0xCtYyp-soeWoVk-UcmU4tbchQ"/>
+<div class="absolute inset-0 bg-gradient-to-t from-surface via-transparent to-transparent"></div>
+</div>
+</div>
+</section>
+<!-- Live Detection Section -->
+<section class="bg-surface-container-low py-24" id="detection">
+<div class="max-w-7xl mx-auto px-8">
+<div class="flex flex-col lg:flex-row gap-8">
+<!-- Main Feed -->
+<div class="flex-grow lg:w-[65%] space-y-6">
+<div class="relative bg-black rounded-[1.5rem] overflow-hidden shadow-2xl aspect-video border border-outline-variant/20">
+<!-- Live Feed Placeholder -->
+<video id="webcam-feed" autoplay playsinline class="w-full h-full object-cover hidden -scale-x-100"></video>
+<img id="video-placeholder" alt="Video Feed" class="w-full h-full object-cover opacity-60" data-alt="POV webcam perspective of a person performing sign language gestures against a neutral studio background with digital skeletal tracking overlays" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCPD9sVh6TyCq0kmpmMszbVUkYRN9zOIkd9WPChPJfbYxdod-YNGrkg3XS2soTr2iEZrfBgkJe9VgyH98-KMQWxo8ThHMjYV9K-ALQY8ULe3y6ftGLp1FXxsX5LE6RrfbZkHsMuCpWNBtlUXRxH6qIRNSFof4dZr5yDWov6ue9XralmO5QmWmYnKkkFj68_WXNZW1k7sx9MkSSTIqwu7ya9-b0p2pGi0RSszYNtQBJKHdipBaxxys2Wp82qMUPyO1lLOwlRPgKsJw"/>
+<!-- Badges -->
+<div class="absolute top-6 left-6 flex gap-3">
+<div class="bg-error/20 backdrop-blur-md px-3 py-1 rounded-full flex items-center gap-2 border border-error/30">
+<div id="live-indicator" class="w-2 h-2 rounded-full bg-error hidden animate-pulse"></div>
+<span class="text-xs font-bold text-error uppercase tracking-wider">Live Stream</span>
+</div>
+<div class="bg-surface-container-highest/60 backdrop-blur-md px-3 py-1 rounded-full border border-outline-variant/20">
+<span class="text-xs font-bold text-primary uppercase tracking-wider">720p • 60 FPS</span>
+</div>
+</div>
+<!-- Detection Overlay -->
+<div class="absolute bottom-6 left-6 right-6 glass-card p-6 rounded-2xl flex items-center justify-between border border-primary/20">
+<div class="flex flex-col">
+<span class="text-label-md text-tertiary uppercase tracking-[0.1em] font-bold text-xs">Detected Word</span>
+<h2 id="detected-word" class="text-4xl font-black text-primary tracking-tight">WAITING...</h2>
+</div>
+<div class="text-right">
+<span class="text-label-md text-tertiary uppercase tracking-[0.1em] font-bold text-xs">Confidence</span>
+<div class="flex items-center gap-3">
+<div class="w-32 h-2 bg-surface-container-lowest rounded-full overflow-hidden">
+<div class="h-full bg-primary transition-all duration-300" id="confidence-bar" style="width: 0%"></div>
+</div>
+<span id="confidence-text" class="text-2xl font-bold text-on-surface">0%</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Controls -->
+<div class="flex gap-4">
+<button id="start-camera-btn" class="flex-1 flex items-center justify-center gap-2 bg-primary text-on-primary py-4 rounded-xl font-bold hover:brightness-110 transition-all">
+<span class="material-symbols-outlined">videocam</span> Start Camera
+                            </button>
+<button id="stop-camera-btn" class="flex-1 flex items-center justify-center gap-2 bg-surface-container-highest border border-outline-variant/30 text-on-surface py-4 rounded-xl font-bold hover:bg-surface-container-high transition-all opacity-50 cursor-not-allowed" disabled>
+<span class="material-symbols-outlined">videocam_off</span> Stop Camera
+                            </button>
+</div>
+</div>
+<!-- Live Sentence Panel -->
+<div class="lg:w-[35%] glass-card rounded-[1.5rem] border border-outline-variant/10 flex flex-col relative h-[500px] lg:h-auto overflow-hidden">
+    <div class="p-6 border-b border-outline-variant/10 bg-surface-container-highest/20 backdrop-blur-md z-10">
+        <h3 class="text-xl font-bold flex items-center gap-2">
+            <span class="material-symbols-outlined text-secondary">closed_caption</span>
+            Live Sentence
+        </h3>
+    </div>
+    <div class="flex-grow p-8 overflow-y-auto custom-scrollbar flex flex-col justify-between">
+        <div class="overflow-y-auto mb-4 custom-scrollbar" style="max-height: 150px;">
+            <p id="live-sentence-text" class="text-xl md:text-2xl font-medium leading-relaxed tracking-tight text-on-surface font-['Inter']">
+                <span class="opacity-50 italic text-base">Waiting for gestures...</span>
+            </p>
+        </div>
+        
+        <div class="border-t border-outline-variant/20 pt-4 mt-auto">
+            <div class="mb-3">
+                <input type="password" id="gemini-api-key" placeholder="API Key (Optional if set in .env)" class="w-full bg-surface-container-highest border border-outline-variant/30 text-sm rounded-lg px-3 py-2 text-on-surface focus:outline-none focus:border-primary transition-all">
+            </div>
+            <button id="generate-ai-sentence-btn" class="w-full bg-gradient-to-r from-secondary to-tertiary text-on-primary font-bold py-3 rounded-xl hover:shadow-[0_0_15px_rgba(138,149,255,0.4)] transition-all flex items-center justify-center gap-2">
+                <span class="material-symbols-outlined">auto_awesome</span> Generate AI Sentence
+            </button>
+            <div class="mt-4 p-4 rounded-xl bg-primary/10 border border-primary/20 hidden" id="ai-sentence-result-box">
+                <span class="text-xs text-primary font-bold uppercase tracking-wider block mb-1">AI Translation</span>
+                <p id="ai-sentence-result" class="text-xl font-bold text-on-surface">Generating...</p>
+            </div>
+        </div>
+    </div>
+    <!-- Clear Button -->
+    <button id="clear-sentence-btn" class="absolute top-5 right-5 w-10 h-10 rounded-full bg-surface-container-high/50 hover:bg-error/20 text-on-surface-variant hover:text-error flex items-center justify-center transition-all border border-outline-variant/10 z-50 cursor-pointer shadow-md" title="Clear Sentence">
+        <span class="material-symbols-outlined text-sm">delete</span>
+    </button>
+</div>
+</div>
+</div>
+</section>
+<!-- How It Works Section -->
+<section class="py-24 max-w-7xl mx-auto px-8" id="how-it-works">
+<div class="text-center mb-16 space-y-4">
+<h2 class="text-4xl font-bold tracking-tight">How It Works</h2>
+<div class="w-24 h-1 bg-primary mx-auto rounded-full"></div>
+</div>
+<div class="grid md:grid-cols-3 gap-8">
+<div class="glass-card p-10 rounded-3xl border border-outline-variant/10 text-center space-y-6 hover:translate-y-[-8px] transition-transform duration-300">
+<div class="w-20 h-20 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto text-primary">
+<span class="material-symbols-outlined text-4xl">videocam</span>
+</div>
+<h3 class="text-2xl font-bold">Capture</h3>
+<p class="text-on-surface-variant leading-relaxed">System accesses your webcam to capture real-time hand movements and depth data.</p>
+</div>
+<div class="glass-card p-10 rounded-3xl border border-outline-variant/10 text-center space-y-6 hover:translate-y-[-8px] transition-transform duration-300">
+<div class="w-20 h-20 bg-secondary/10 rounded-2xl flex items-center justify-center mx-auto text-secondary">
+<span class="material-symbols-outlined text-4xl">psychology</span>
+</div>
+<h3 class="text-2xl font-bold">Process</h3>
+<p class="text-on-surface-variant leading-relaxed">Advanced neural networks analyze landmark coordinates to identify specific sign patterns.</p>
+</div>
+<div class="glass-card p-10 rounded-3xl border border-outline-variant/10 text-center space-y-6 hover:translate-y-[-8px] transition-transform duration-300">
+<div class="w-20 h-20 bg-tertiary/10 rounded-2xl flex items-center justify-center mx-auto text-tertiary">
+<span class="material-symbols-outlined text-4xl">chat_bubble</span>
+</div>
+<h3 class="text-2xl font-bold">Display</h3>
+<p class="text-on-surface-variant leading-relaxed">The identified sign is instantly converted to text and displayed with high accuracy scores.</p>
+</div>
+</div>
+</section>
+<!-- Features Section (Bento Grid) -->
+<section class="bg-surface-container-low py-24">
+<div class="max-w-7xl mx-auto px-8">
+<div class="grid grid-cols-1 md:grid-cols-4 md:grid-rows-2 gap-6 h-auto md:h-[600px]">
+<!-- Main Feature -->
+<div class="md:col-span-2 md:row-span-2 bg-surface-container-highest rounded-3xl p-10 relative overflow-hidden group">
+<div class="relative z-10 space-y-4">
+<span class="text-primary font-bold tracking-widest text-xs uppercase">Core Technology</span>
+<h3 class="text-3xl font-bold">Ultra-Low Latency Detection</h3>
+<p class="text-on-surface-variant leading-relaxed max-w-sm">Experience seamless translation with our optimized inference engine, providing real-time feedback in milliseconds.</p>
+</div>
+<div class="absolute bottom-0 right-0 w-64 h-64 opacity-20 group-hover:scale-110 transition-transform duration-700">
+<span class="material-symbols-outlined text-[200px] text-primary">bolt</span>
+</div>
+</div>
+<!-- Feature 2 -->
+<div class="md:col-span-2 bg-surface-container rounded-3xl p-8 border border-outline-variant/10 flex items-center gap-6">
+<div class="w-16 h-16 rounded-2xl bg-secondary/20 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-secondary">verified</span>
+</div>
+<div>
+<h4 class="text-xl font-bold">99% Prediction Accuracy</h4>
+<p class="text-on-surface-variant text-sm">Trained on over 50,000 unique sign instances.</p>
+</div>
+</div>
+<!-- Feature 3 -->
+<div class="bg-surface-container rounded-3xl p-8 border border-outline-variant/10">
+<span class="material-symbols-outlined text-primary mb-4">brightness_4</span>
+<h4 class="text-lg font-bold">Low Light Support</h4>
+<p class="text-on-surface-variant text-sm mt-2">Enhanced visibility algorithms for dim environments.</p>
+</div>
+<!-- Feature 4 -->
+<div class="bg-surface-container rounded-3xl p-8 border border-outline-variant/10">
+<span class="material-symbols-outlined text-tertiary mb-4">accessibility</span>
+<h4 class="text-lg font-bold">Accessible UI</h4>
+<p class="text-on-surface-variant text-sm mt-2">Built with inclusive design principles at heart.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Add Sign Section -->
+<section class="bg-surface-container-low py-24" id="add-sign">
+    <div class="max-w-7xl mx-auto px-8">
+        <div class="text-center mb-16 space-y-4">
+            <h2 class="text-4xl font-bold tracking-tight">Add & Explore Signs</h2>
+            <div class="w-24 h-1 bg-primary mx-auto rounded-full"></div>
+            <p class="text-on-surface-variant max-w-2xl mx-auto">Explore our existing sign language database and contribute by adding your own gestures to help improve the model.</p>
+        </div>
+
+        <div class="grid lg:grid-cols-2 gap-12">
+            <!-- Explore Gestures Library -->
+            <div class="glass-card p-8 rounded-[1.5rem] border border-outline-variant/10 flex flex-col h-[600px]">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-2xl font-bold flex items-center gap-2">
+                        <span class="material-symbols-outlined text-secondary">view_module</span>
+                        Gesture Library
+                    </h3>
+                    <div class="relative w-48">
+                        <input type="text" id="gesture-search-input" placeholder="Search..." class="w-full bg-surface-container-highest border border-outline-variant/30 text-sm rounded-lg pl-3 pr-8 py-2 text-on-surface focus:outline-none focus:border-primary transition-all">
+                        <span class="material-symbols-outlined absolute right-2 top-2 text-on-surface-variant text-[18px]">search</span>
+                    </div>
+                </div>
+                <div id="gesture-library-container" class="flex-grow overflow-y-auto space-y-4 pr-2 custom-scrollbar">
+                    <div class="flex items-center justify-center h-full opacity-50 italic">
+                        Loading library...
+                    </div>
+                </div>
+            </div>
+
+            <!-- Add Your Gesture Area -->
+            <div class="glass-card p-8 rounded-[1.5rem] border border-outline-variant/10 flex flex-col h-[600px]">
+                <h3 class="text-2xl font-bold mb-6 flex items-center gap-2">
+                    <span class="material-symbols-outlined text-primary">add_circle</span>
+                    Contribute a Sign
+                </h3>
+                
+                <div class="space-y-6 flex-grow flex flex-col min-h-0">
+                    <div class="space-y-2">
+                        <label class="text-sm font-bold text-on-surface-variant uppercase tracking-wider">Word or Phrase</label>
+                        <input id="gesture-word-input" type="text" placeholder="e.g. WELCOME" class="w-full bg-surface-container-highest border border-outline-variant/30 rounded-xl px-4 py-3 text-on-surface focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all placeholder:text-on-surface-variant/50">
+                    </div>
+
+                    <div class="relative flex-grow min-h-0 bg-black rounded-xl overflow-hidden border border-outline-variant/20 group">
+                        <video id="gesture-video-feed" autoplay muted playsinline class="hidden w-full h-full object-cover -scale-x-100"></video>
+                        <img id="gesture-video-placeholder" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCPD9sVh6TyCq0kmpmMszbVUkYRN9zOIkd9WPChPJfbYxdod-YNGrkg3XS2soTr2iEZrfBgkJe9VgyH98-KMQWxo8ThHMjYV9K-ALQY8ULe3y6ftGLp1FXxsX5LE6RrfbZkHsMuCpWNBtlUXRxH6qIRNSFof4dZr5yDWov6ue9XralmO5QmWmYnKkkFj68_WXNZW1k7sx9MkSSTIqwu7ya9-b0p2pGi0RSszYNtQBJKHdipBaxxys2Wp82qMUPyO1lLOwlRPgKsJw" alt="Webcam Placeholder" class="w-full h-full object-cover opacity-30 group-hover:opacity-40 transition-all duration-500">
+                        <div id="gesture-overlay" class="absolute inset-0 flex flex-col items-center justify-center p-6 text-center space-y-4">
+                            <div class="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center text-primary backdrop-blur-md">
+                                <span class="material-symbols-outlined text-3xl">photo_camera</span>
+                            </div>
+                            <div>
+                                <h4 class="text-lg font-bold text-on-surface">Ready to Record</h4>
+                                <p class="text-sm text-on-surface-variant">Position your hands clearly in the frame</p>
+                            </div>
+                        </div>
+                        <div id="recording-indicator" class="absolute top-4 right-4 bg-error/90 backdrop-blur text-xs px-3 py-1.5 rounded text-white border border-error hidden items-center font-bold">
+                            <span class="w-2 h-2 rounded-full bg-white animate-pulse mr-2"></span> Recording...
+                        </div>
+                    </div>
+
+                    <button id="start-record-btn" class="w-full bg-gradient-to-r from-primary to-secondary text-on-primary font-bold py-4 rounded-xl hover:shadow-[0_0_20px_rgba(59,191,250,0.4)] transition-all flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-[0.98]">
+                        <span class="material-symbols-outlined">radio_button_checked</span>
+                        <span id="record-btn-text">Start Recording (5s)</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- About Section -->
+<section class="py-24 max-w-7xl mx-auto px-8 grid lg:grid-cols-2 gap-20 items-center" id="about">
+<div class="space-y-6">
+<h2 class="text-4xl font-bold tracking-tight">About The Project</h2>
+<div class="space-y-4 text-on-surface-variant leading-relaxed text-lg">
+<p>
+                        Our mission is to bridge the communication gap between the deaf and hard-of-hearing community and the rest of the world. By utilizing cutting-edge computer vision and deep learning, we've developed a system that makes interpretation accessible to everyone with a browser.
+                    </p>
+<p>
+                        The core of the system is built using a robust tech stack including <span class="text-primary font-bold">Python</span> for logic, <span class="text-secondary font-bold">OpenCV</span> for image processing, and <span class="text-tertiary font-bold">MediaPipe</span> for high-fidelity hand tracking.
+                    </p>
+</div>
+<div class="pt-6 flex flex-wrap gap-4">
+<div class="px-4 py-2 rounded-lg bg-surface-container border border-outline-variant/20 flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-primary"></span> Python
+                    </div>
+<div class="px-4 py-2 rounded-lg bg-surface-container border border-outline-variant/20 flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-secondary"></span> MediaPipe
+                    </div>
+<div class="px-4 py-2 rounded-lg bg-surface-container border border-outline-variant/20 flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-tertiary"></span> TensorFlow
+                    </div>
+<div class="px-4 py-2 rounded-lg bg-surface-container border border-outline-variant/20 flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-on-surface"></span> OpenCV
+                    </div>
+</div>
+</div>
+<div class="relative bg-surface-container-high rounded-[2rem] p-4 border border-outline-variant/10">
+<img alt="Tech Stack" class="rounded-[1.5rem] shadow-2xl grayscale hover:grayscale-0 transition-all duration-700" data-alt="Modern clean software code displayed on a high-resolution monitor in a dimly lit developer studio with cyan and magenta ambient lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAqKWKF4V-6tIAEIjei-zlwoJvnoWKvS7pIPu-jPsz4tCcQftqF_Kg6ATRMsaBTUkXvXHSd-tOM5A_Cw0rFxSBoTe7I6GE6FEj1ZCn7gTl-oXFx798wjPf5Bn1Xrupo-mjpiIDX662xVth_Lqive8LcS7PtCFItydmq3mswvP_Bwx61EtGT-2dPDOsnkLYVaYIQn90tL-XvgLcbNusnDBOeMtLJQ_sRZnAE_RZ1Y2td3MzkVcOEGw2qVK3VBmCB_6oQcNSZvX0Jnw"/>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="bg-[#060e20] w-full border-t border-[#40485d]/20">
+<div class="flex flex-col md:flex-row justify-between items-center px-10 py-12 gap-6 max-w-7xl mx-auto">
+<div class="flex flex-col gap-2">
+<span class="text-lg font-bold text-[#3bbffa]">Sign Language Detection</span>
+<p class="font-['Inter'] text-sm text-[#dee5ff]/60">© 2026 Sign Language Detection. Made by Amol Powar.</p>
+</div>
+<div class="flex gap-8 items-center">
+<a class="text-[#dee5ff]/40 hover:text-[#8a95ff] transition-colors text-sm" href="#">Privacy Policy</a>
+<a class="text-[#dee5ff]/40 hover:text-[#8a95ff] transition-colors text-sm" href="#">Terms of Service</a>
+<a class="text-[#dee5ff]/40 hover:text-[#8a95ff] transition-colors text-sm" href="#">Support</a>
+<a class="text-[#dee5ff]/40 hover:text-[#8a95ff] transition-colors text-sm" href="https://github.com/amlya222">Github</a>
+</div>
+</div>
+</footer>
+<script src="app.js?v=2"></script>
+</body></html>

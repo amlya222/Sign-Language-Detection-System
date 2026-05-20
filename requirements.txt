@@ -1,0 +1,8 @@
+opencv-python
+mediapipe
+tensorflow
+datasets
+numpy
+pyttsx3
+Pillow
+Flask
