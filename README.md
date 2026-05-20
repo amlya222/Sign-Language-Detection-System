@@ -1,3 +1,4 @@
+
 # Real-Time Sign Language Detection System
 
 An AI-powered application designed for real-time translation of American Sign Language (ASL) into English text and spoken voice. Built using Python, TensorFlow, MediaPipe, and OpenCV.
@@ -44,3 +45,6 @@ You can alter which words the AI learns to recognize by opening `config.py` and 
 
 ---
 *Created as a final-year engineering project demonstration.*
+
+# Sign-Language-Detection-System
+
