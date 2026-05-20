@@ -37,7 +37,7 @@ python main.py --train
 ### 3. Launch the Translator
 Once your model file `sign_model.keras` has been generated, you can launch the GUI to begin translating.
 ```bash
-python main.py
+python server.py
 ```
 
 ## Modifying Vocabulary
